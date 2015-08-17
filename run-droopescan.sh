@@ -2,7 +2,7 @@ set -e
 set -u
 
 cd droopescan
-cwd=/root/1kk_scan/split/
+cwd=/root/final/
 for file in ${cwd}part*; do
 	results_dir=${cwd}results-$(basename $file)/
 	echo $results_dir
