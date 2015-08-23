@@ -1,0 +1,49 @@
+from twisted.internet import reactor
+from twisted.web.client import Agent
+from twisted.web.http_headers import Headers
+
+global total_requests_made
+total_requests_made = 0
+
+global total_errors
+total_errors = 0
+
+def cbResponse(ignored):
+    global total_requests_made
+    total_requests_made += 1
+    print 'Response received '
+    check_shutdown()
+
+def check_shutdown():
+    global total_requests_made
+    if total_requests_made == total_requests:
+        cbShutdown(None)
+
+def cbShutdown(ignored):
+    reactor.stop()
+
+def errBack(error):
+    global total_requests_made
+    total_requests_made += 1
+
+    global total_errors
+    total_errors += 1
+    print(total_errors)
+    check_shutdown()
+    return
+
+agent = Agent(reactor)
+
+total_requests = 1000
+for i in range(total_requests):
+    d = agent.request(
+        'GET',
+        'http://66.172.12.12/',
+        Headers({'User-Agent': ['Twisted Web Client Example']}),
+        None)
+
+    d.addCallback(cbResponse)
+    d.addErrback(errBack)
+    #d.addBoth(cbShutdown)
+
+reactor.run()
