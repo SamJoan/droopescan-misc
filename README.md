@@ -1,2 +1,2 @@
 # droopescan-misc
-Misc shit.
+Misc stuff.
